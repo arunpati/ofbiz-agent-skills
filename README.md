@@ -24,6 +24,8 @@ Each directory contains:
 - `SKILL.md`: The core knowledge file containing the goal, procedures, and guardrails for that specific skill.
 
 ## Available Skills
+For a detailed list of all skills with short descriptions, see [SKILLS_SUMMARY.md](file:///Users/arun/personal/arun/ofbiz_dev/ofbiz-framework/plugins/ofbiz-skills/SKILLS_SUMMARY.md).
+
 The toolkit currently covers:
 - **Core Abstractions**: `manage-entities`, `manage-services`, `manage-data`.
 - **UI & Interaction**: `manage-screens`, `manage-forms`, `manage-menus`, `manage-templates`, `manage-ajax`.
