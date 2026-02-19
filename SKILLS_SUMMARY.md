@@ -44,9 +44,9 @@ This document provides a high-level summary of the specialized skills developed 
 | Skill | Description |
 | :--- | :--- |
 | **manage-security-advanced** | Implement complex security permissions, ACLs, and service-level data filtering. |
-| **manage-localization** | Handle advanced i18n, time zones, and locale-specific formatting. |
+| **manage-localization-advanced** | Handle advanced i18n, time zones, and locale-specific formatting. |
 | **manage-webapps** | Configure web application boundaries, session management, and filter chains. |
-| **manage-cache-性能** | Optimize performance through Entity Cache, Service Cache, and SQL query tuning. |
+| **manage-cache-and-performance** | Optimize performance through Entity Cache, Service Cache, and SQL query tuning. |
 | **manage-properties** | Centralize configuration settings in `.properties` files for environment management. |
 
 ## 🚀 Project Lifecycle

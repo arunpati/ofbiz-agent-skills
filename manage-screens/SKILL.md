@@ -10,7 +10,8 @@ Define and maintain complex UI screens using the OFBiz Screen Widget XML.
 ## Triggers
 **ALWAYS** read this skill when:
 - Creating or modifying XML files in `widget/` directory (e.g., `*Screens.xml`).
-- Defining new request-to-view mappings in `controller.xml` that point to screens.
+- Registering screen resources in `ofbiz-component.xml`.
+- Defining new request-to-view mappings in `controller.xml`.
 
 ## Use when
 - Developing new UI features or custom dashboards.
@@ -25,6 +26,10 @@ Define and maintain complex UI screens using the OFBiz Screen Widget XML.
     - Use `<decorator-screen>` to wrap screens. 
     - Populate sections like `body`, `pre-body`, or `menu-bar` using `<decorator-section name="...">`.
     - Use `<decorator-section-include>` in the decorator definition itself to mark insertion points.
+3. **Register**: Ensure the widget XML is registered in `ofbiz-component.xml`:
+   ```xml
+   <screen-resource type="model" loader="main" location="component://[comp]/widget/[File]Screens.xml"/>
+   ```
 3. **Action Section (Complex)**: 
     - **Data Fetching**: Use `<entity-one>`, `<entity-and>`, `<entity-condition>`.
     - **Logic**: Use `<script location="..."/>` for complex Groovy logic.

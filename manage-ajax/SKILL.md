@@ -37,6 +37,7 @@ Configure and implement AJAX interactions to provide a seamless UI experience wi
           <response name="error" type="request" value="json"/>
       </request-map>
       ```
+4. **Common Events**: Ensure your controller includes the standard JSON event handler (usually inherited or via `<include name="CommonEvents" location="component://common/webtools/webapp/webtools/WEB-INF/controller.xml"/>`).
     - **Partial HTML Response**:
       ```xml
       <request-map uri="myPartialScreen">

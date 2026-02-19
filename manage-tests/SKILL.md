@@ -1,6 +1,9 @@
 ---
 name: manage-tests
-description: Define and maintain OFBiz automated test suites using XML and JUnit.
+description:
+- Defining automated test suites in `testdef/`.
+- Implementing JUnit or Groovy tests.
+- Running tests via `./gradlew test` or `./gradlew "ofbiz --test"`.
 ---
 
 # Skill: manage-tests
@@ -24,11 +27,16 @@ Define and maintain automated test suites within the OFBiz framework to ensure c
     - `junit-test-suite`: For running complex Java-based JUnit tests.
 2. **Define Test Suite**:
     - Use `<test-suite>` as the root element.
-    - Register components in `ofbiz-component.xml` using `<test-suite loader="main" location="testdef/tests.xml"/>`.
-3. **Execution**:
+3. **Registration**: Ensure the test suite is registered in `ofbiz-component.xml`:
+   ```xml
+   <test-suite loader="main" location="testdef/MyTestSuite.xml"/>
+   ```
+4. **Data Isolation**:
+    - Use `<entity-xml>` in test defs to load specific test data.
+    - Prefer using `Seed` or `Demo` data foundations.
+5. **Assertions**: Use standard JUnit assertions (`assertEquals`, `assertNotNull`) or `ServiceUtil.isSuccess(result)`.
+6. **Execution**:
     - Run tests using Gradle: `./gradlew "ofbiz --test component=[component-name] --test suitename=tests"`.
-4. **Asserting Results**:
-    - Use built-in assertions in MiniLang or JUnit to verify object states and service outcomes.
 
 ## Guardrails
 - **Isolation**: Ensure tests do not depend on external data states. Use seed or demo data provided within the component.
