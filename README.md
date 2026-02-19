@@ -11,7 +11,7 @@ For an AI agent (like Antigravity) to effectively use these skills, they need to
 
 ### 1. Framework Location (Plugin)
 Keep the source of these skills in your OFBiz plugins directory for version control:
-`/Users/arun/personal/arun/ofbiz_dev/ofbiz-framework/plugins/ofbiz-skills/`
+`~/ofbiz-framework/plugins/ofbiz-skills/`
 
 ### 2. Native Agent Directory (Activation)
 For the agent to recognize these as **Core Skills** (allowing tools like `view_skill` to work), they must be placed in the agent's native directory:
@@ -22,7 +22,7 @@ To maintain the skills in your GitHub-tracked plugin while enabling them for the
 
 ```bash
 # Example: Activate the manage-quartz-jobs skill
-ln -s /Users/arun/personal/arun/ofbiz_dev/ofbiz-framework/plugins/ofbiz-skills/manage-quartz-jobs ~/.gemini/antigravity/skills/manage-quartz-jobs
+ln -s ~/ofbiz-framework/plugins/ofbiz-skills/manage-quartz-jobs ~/.gemini/antigravity/skills/manage-quartz-jobs
 ```
 
 ## How to Use with an Agent
@@ -44,7 +44,7 @@ Each directory contains:
 - `SKILL.md`: The core knowledge file containing the goal, procedures, and guardrails for that specific skill.
 
 ## Available Skills
-For a detailed list of all skills with short descriptions, see [SKILLS_SUMMARY.md](file:///Users/arun/personal/arun/ofbiz_dev/ofbiz-framework/plugins/ofbiz-skills/SKILLS_SUMMARY.md).
+For a detailed list of all skills with short descriptions, see [SKILLS_SUMMARY.md](~/ofbiz-skills/SKILLS_SUMMARY.md).
 
 The toolkit currently covers:
 - **Core Abstractions**: `manage-entities`, `manage-services`, `manage-data`.
