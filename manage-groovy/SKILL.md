@@ -1,65 +1,66 @@
 ---
 name: manage-groovy
-description: Write Groovy logic for OFBiz services and scripts. Use when creating/debugging Groovy services or implementing entity logic.
+description: |
+  Write Groovy logic for OFBiz services and scripts. Use when
+  - Writing logic for OFBiz services using Groovy.
+  - Creating UI/API data preparation scripts.
+  - Implementing modern entity logic using Groovy DSL.
 ---
 
-# Skill: manage-groovy
+# Skill: manage-groovy (v1.0)
+
 ## Goal
-Write concise, effective Groovy logic for data preparation, UI scripting, and business orchestration.
+Implement business logic in Groovy using modern OFBiz DSL patterns.
 
 ## Triggers
 **ALWAYS** read this skill when:
-- Creating files in `src/main/groovy` or using `engine="groovy"` in services.
-- Writing `<actions>` scripts for screens or forms.
-- Designing data adaptors or simple service sequences.
+- Creating or modifying `.groovy` files.
+- Implementing logic for services with `engine="groovy"`.
 
 ## Use when
-- Preparing data for screens (filtering, tree building).
-- Implementing services that primarily manipulate maps and lists.
-- Rapidly prototyping business logic.
-- Using OFBiz DSL features (e.g., `from(...)`, `select(...)`).
+- Writing core business logic.
+- Complex data transformations or filtering.
+- Data preparation for screen/form context.
 
 ## Procedure
 1. **Service vs. Script**:
     - **Service**: Methods like `def myService() { ... }` that return a Map.
     - **Script**: Flat logic for UI data preparation (returns context variables).
-2. **OFBiz Groovy DSL**:
-    - Use `from("Entity").where("field", value).queryOne()` for data.
-    - Use `runService("serviceName", [param: val])` for orchestration.
-3. **Data Manipulation**:
+2. **Entity DSL**: Use the modern OFBiz DSL for readability:
+   ```groovy
+   List products = from("Product").where("statusId", "PROD_ACTIVE").orderBy("productName").queryList()
+   GenericValue product = from("Product").where("productId", productId).queryOne()
+   ```
+3. **Service Call**:
+   ```groovy
+   Map result = runService("updateProduct", [productId: productId, internalName: "New Name"])
+   ```
+4. **Data Manipulation**:
     - Leverage Groovy's power: `list.collect { it.name }`, `map.subMap(['key1', 'key2'])`.
-4. **Context Access**:
+5. **Context Access**:
     - Services access `parameters`. Scripts access global bindings (e.g., `context`).
-5. **Success/Error**:
+6. **Success/Error**:
     - Use `return success([key: val])` or `return error("Message")`.
 
 ## Guardrails
-- **Method Scope**: Avoid complex logic in the root of the script; wrap in methods for services.
-- **Service Validation**: ALWAYS check `ServiceUtil.isError(result)` when calling `runService`.
-- **Null Handling**: Use the safe navigation operator `?.` (e.g., `userLogin?.userLoginId`).
-- **Complexity**: If logic exceeds 200 lines or requires deep inheritance, consider Java.
+- **Naming**: Use camelCase for methods and variables.
+- **Security**: Always use `auth="true"` in the service definition. Groovy scripts inherit the security context of the dispatcher.
+- **Typing**: Prefer `def` for local dynamics, but use explicit types (e.g., `GenericValue`, `Map`) for public API/Service interfaces.
+- **Performance**: Avoid `findList` if a simple `queryOne` or `queryList` with strict `where` clauses is possible.
 
 ## Examples
-**Example: Orchestration Service**
+**Example: Groovy Service**
 ```groovy
-def processOrderAndNotify() {
-    // 1. Run a service
-    Map result = runService("processOrder", [orderId: parameters.orderId])
-    if (ServiceUtil.isError(result)) return result
-    
-    // 2. Query data
-    GenericValue order = from("OrderHeader").where("orderId", parameters.orderId).queryOne()
-    
-    // 3. Notify
-    runService("sendNotification", [to: order.createdByUserLogin, message: "Order processed"])
-    
-    return success("Order ${parameters.orderId} processed successfully")
-}
-```
+import org.apache.ofbiz.entity.GenericValue
 
-**Example: Screen Data Preparation**
-```groovy
-// In a .groovy file referenced by <actions>
-exampleList = from("Example").where("statusId", "EXST_APPROVED").queryList()
-context.exampleList = exampleList
+def updateInternalName() {
+    String productId = parameters.productId
+    GenericValue product = from("Product").where("productId", productId).queryOne()
+    if (product) {
+        product.internalName = parameters.internalName
+        product.store()
+        return success("Product name updated")
+    }
+    return error("Product not found")
+}
 ```

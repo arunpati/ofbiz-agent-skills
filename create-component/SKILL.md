@@ -11,6 +11,7 @@ Create a new, isolated OFBiz component with the correct directory structure and 
 **ALWAYS** read this skill when:
 - Creating a new plugin or component.
 - Isolating a large feature set into a separate module.
+- Understanding plugin discovery vs. manual registration.
 
 ## Use when
 - Starting a brand new feature (e.g., `my-custom-module`).
@@ -25,12 +26,23 @@ Create a new, isolated OFBiz component with the correct directory structure and 
 3. **Initial Configuration**:
     - Update `ofbiz-component.xml` with proper titles and descriptions.
     - Add basic security permissions in `data/[Component]SecurityData.xml`.
-4. **Registration**:
-    - Run `./gradlew loadAll` (or just start OFBiz) to register the component in the system.
+4. **Registration (Automatic)**:
+    - OFBiz automatically discovers any directory in `plugins/` that contains an `ofbiz-component.xml` file.
+    - NO command like `./gradlew loadAll` is required for registration.
+    - OFBiz must be restarted (or a container reload triggered) to detect new components.
+
+## Post-Scaffold Customization
+1. **Directory Structure**: Verify the existence of `entitydef/`, `servicedef/`, `data/`, and `webapp/`.
+2. **Component XML**: Update `ofbiz-component.xml` with actual resource locations.
+3. **Web Application**: If your component has a UI, ensure the `<webapp>` entry has a unique `mount-point`.
+4. **Permissions**: Define base permissions in `data/MyComponentSecurityData.xml`.
 
 ## Guardrails
-- **Naming**: Use lowercase, kebab-case (e.g., `order-management`). Avoid spaces or special characters.
+- **Naming**: Use lowercase, kebab-case (e.g., `order-management`).
 - **Location**: All custom components MUST reside in the `plugins/` directory.
+- **Discovery**: Plugins in `plugins/` are auto-discovered. Do not try to manually register them in framework load files.
+- **Independence**: Ensure the new component doesn't break existing ones.
+- **Best Practice**: Immediately create a dedicated `SecurityData.xml` to avoid permission conflicts.
 - **Cleanliness**: Delete unused scaffolded files (e.g., placeholder entities) after creation.
 
 ## Examples

@@ -1,51 +1,51 @@
 ---
 name: manage-minilang
-description: Orchestrate service workflows using OFBiz MiniLang (XML). Use when coordinating standard flows or declarative logic.
+description: |
+  Manage legacy business logic in OFBiz MiniLang (XML). Use when
+  - Modifying legacy service workflows defined in XML.
+  - Troubleshooting existing MiniLang codebases.
+  - Migrating MiniLang logic to Groovy (Highly Recommended).
 ---
 
-# Skill: manage-minilang
+# Skill: manage-minilang (v1.0)
+
 ## Goal
-Maintain and troubleshoot legacy XML-based business logic (Simple Methods) in OFBiz.
+Manage legacy business logic in OFBiz MiniLang (XML) while ensuring a path toward modernization.
 
 ## Triggers
 **ALWAYS** read this skill when:
-- Modifying files in `minilang/` directories.
-- Debugging services with `engine="simple"`.
-- Converting legacy MiniLang logic to Groovy (recommended for new work).
+- User asks to modify `.xml` files in `minilang/` or `script/` directories (excluding services/entities).
+- Debugging `engine="simple"` services.
 
 ## Use when
 - Maintaining existing OFBiz core logic.
 - Implementing very simple CRUD sequences (if required by project conventions).
 
+> [!IMPORTANT]
+> **MiniLang is DEPRECATED in modern OFBiz versions.**
+> - Use Groovy for all new business logic.
+> - Only use MiniLang for maintenance of existing legacy code.
+
 ## Procedure
-1. **Method Definition**:
-    - Defined inside `<simple-methods>`.
-    - Use `<simple-method method-name="...">`.
-2. **Context Manipulation**:
-    - Use `<set field="..." from-field="..."/>`.
-    - Use `<property-to-field .../>` to read properties.
-3. **Entity Operations**:
-    - Use `<make-value entity-name="..." value-field="..."/>`.
-    - Use `<create-value value-field="..."/>` or `<store-value value-field="..."/>`.
-    - Use `<set-nonpk-fields map="..." value-field="..."/>`.
-4. **Service Calls**:
-    - Use `<call-service service-name="..." in-map-name="...">`.
-5. **Control Flow**:
-    - Use `<if-empty>`, `<if-compare>`, `<iterate>`.
+1. **Locate**: Find the `<simple-method>` in a `script/.../*.xml` file.
+2. **Define**: Define logic using standard tags: `<entity-one>`, `<entity-and>`, `<set>`, `<call-service>`.
+3. **Register**: Ensure the script is registered in `servicedef/services.xml`:
+   ```xml
+   <service name="legacyService" engine="simple" location="component://[comp]/minilang/.../[file].xml" invoke="[methodName]">
+   ```
 
 ## Guardrails
-- **Complexity**: Do NOT write new complex logic in MiniLang. Prefer Groovy.
-- **Validation**: Ensure all tags follow the `simple-methods.xsd`.
-- **Error Handling**: Use `<add-error>`, `<check-errors>`, and `<return/>`.
+- **Deprecation**: Never start NEW development in MiniLang.
+- **Service Security**: `auth="true"` is required at the service definition, not within MiniLang itself.
+- **Complex Logic**: Avoid deeply nested `<if>` or `<loop>` tags in MiniLang; this is a sign it should be migrated to Groovy.
+- **Variable Scoping**: Be aware that variables created with `<set>` are local to the `<simple-method>` unless explicitly mapped to `parameters`.
 
 ## Examples
 **Example: Simple Status Update**
 ```xml
-<simple-method method-name="updateExampleStatus">
-    <entity-one entity-name="Example" value-field="example"/>
-    <if-not-empty field="example">
-        <set field="example.statusId" from-field="parameters.statusId"/>
-        <store-value value-field="example"/>
-    </if-not-empty>
+<simple-method method-name="updateProductStatus">
+    <entity-one entity-name="Product" value-field="product"/>
+    <set field="product.statusId" from-field="parameters.statusId"/>
+    <store-value value-field="product"/>
 </simple-method>
 ```

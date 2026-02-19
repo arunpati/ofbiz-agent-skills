@@ -10,6 +10,7 @@ Define and maintain the OFBiz Data Model using XML entity definitions.
 ## Triggers
 **ALWAYS** read this skill when:
 - Creating or modifying `entitymodel.xml` or `entitymodel_view.xml`.
+- Registering entities in `ofbiz-component.xml`.
 - Troubleshooting database sync or SQL errors.
 - Designing complex data relationships.
 
@@ -25,12 +26,16 @@ Define and maintain the OFBiz Data Model using XML entity definitions.
     - Defined in `entitydef/entitymodel.xml`.
     - Always include a `title` and `package-name`.
     - **Primary Keys**: Every entity MUST have at least one `<prim-key field="..."/>`.
-2. **Field Types**:
+2. **Registration**: Ensure the `entitymodel.xml` is registered in `ofbiz-component.xml`:
+   ```xml
+   <entity-resource type="model" reader-name="main" loader="main" location="entitydef/entitymodel.xml"/>
+   ```
+3. **Field Types**:
     - Use standard OFBiz types: `id`, `id-long`, `name`, `description`, `date-time`, `currency-amount`, `floating-point`, `numeric`.
-3. **Relationships**:
+4. **Relationships**:
     - Use `<relation type="one" fk-name="..." rel-entity-name="...">` for foreign keys.
     - Use `<relation type="many" ...>` for logical collections.
-4. **View Entities (Joins & Functions)**:
+5. **View Entities (Joins & Functions)**:
     - Defined in `entitydef/entitymodel_view.xml`.
     - Use `<member-entity entity-alias="..." entity-name="..."/>`.
     - Use `<alias-all entity-alias="..."/>` or specific `<alias entity-alias="..." name="..."/>`.
@@ -47,8 +52,9 @@ Define and maintain the OFBiz Data Model using XML entity definitions.
     - Alias `description` from `StatusItem` to provide a readable status.
 
 ## Guardrails
-- **Core Entities**: NEVER modify core framework entities (e.g., `Party`, `OrderHeader`) directly. Use `extending` patterns if absolutely necessary.
+- **Core Entities**: NEVER modify framework entities directly. Use `<extend-entity>`.
 - **Naming**: Use CamelCase for entities and fields (e.g., `ProductPrice`, `productId`).
+- **Audit**: Enable audit logging for sensitive fields using `enable-audit-log="true"`.
 - **Database level**: Prefer View-Entities over Java-level loops for data aggregation.
 
 **Example: Standard Entity with Relation**

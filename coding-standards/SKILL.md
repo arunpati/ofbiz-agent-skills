@@ -9,8 +9,9 @@ Ensure all OFBiz contributions meet production-grade standards for clarity, main
 
 ## Triggers
 **ALWAYS** read this skill when:
-- Writing or refactoring any code (Java, Groovy, XML, FTL).
-- A task requires "clean code" or "production quality".
+- Writing any code (Java, Groovy, XML, CSS).
+- Reviewing PRs or auditing existing code for OFBiz alignment.
+- Using OFBiz utility libraries for validation and map creation.
 - Preparing a pull request or implementing new features.
 
 ## General Rules
@@ -21,14 +22,20 @@ Ensure all OFBiz contributions meet production-grade standards for clarity, main
 
 ## OFBiz Specific Standards
 1. **XML Actions**: Keep logic flat. If it requires complex loops or nesting, move to Groovy.
-2. **Service Definitions**:
-    - Always include `<description>` tags.
-    - Use clear, descriptive attribute names.
-3. **Java/Groovy**:
-    - Use `MODULE` string for logging.
+2. **Naming Conventions**:
+    - **Components**: `kebab-case` (e.g., `order-management`).
+    - **Entities/Services**: `UpperCamelCase` for entities, `lowerCamelCase` for services.
+    - **Java/Groovy**: `lowerCamelCase` for methods/variables, `UpperCamelCase` for classes.
+3. **Documentation**:
+    - **Services**: Every service MUST have a `<description>` in `services.xml`.
+    - **Java/Groovy**: Use Javadoc/Groovydoc for public methods and complex logic.
+4. **Utility Libraries**:
+    - **Validation**: ALWAYS use `UtilValidate.isEmpty()` or `isNotEmpty()`.
+    - **Maps/Lists**: Use `UtilMisc.toMap(...)` and `UtilMisc.toList(...)` for concise creation.
+    - **Logging**: Use `Debug.logInfo(...)`, `Debug.logError(...)` with a `MODULE` tag.
     - Use `.filterByDate()` for all date-effective entities (e.g., `ProductPrice`, `StatusItem`).
     - Prefer `EntityQuery` over `delegator.findOne(...)`.
-4. **Internationalization (i18n)**:
+5. **Internationalization (i18n)**:
     - Never hardcode user-facing strings. Use `uiLabelMap.LabelKey`.
 
 ## Guardrails

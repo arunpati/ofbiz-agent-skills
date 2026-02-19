@@ -17,8 +17,8 @@ Configure and maintain the structure, resources, and dependencies of an OFBiz co
 ## Use when
 - Registering business resources (entities, services, data).
 - Defining web applications and mount points.
-- Configuring inter-component dependencies.
-- Managing external Java libraries.
+- Managing build and runtime dependencies (`depends-on`).
+- Configuring `classpath` and resource loaders.
 
 ## Procedure
 1. **Resource Registration**:
@@ -26,16 +26,18 @@ Configure and maintain the structure, resources, and dependencies of an OFBiz co
     - **Services**: `<service-resource type="model" loader="main" location="servicedef/services.xml"/>`
     - **Webapp**: Define `<webapp name="..." title="..." server="..." location="webapp/..." mount-point="/..."/>`.
 2. **Dependency Management**:
-    - **Internal**: Use `component://` URIs for cross-component resource referencing.
-    - **External**: Add `dependencies { implementation 'group:name:version' }` to `build.gradle`.
+    - **Inter-Component**: Use `<depends-on component-name="xxx"/>` in `ofbiz-component.xml` to ensure correct loading order.
+    - **Resource URIs**: Use `component://` URIs for cross-component resource referencing.
+    - **External Libraries**: Add `dependencies { implementation 'group:name:version' }` to `build.gradle`.
+    - **Classpath**: Register JARs or directories using `<classpath type="jar" location="lib/*"/>` in `ofbiz-component.xml`.
 3. **Component Properties**:
     - Define component-specific settings in `config/[Component]UiLabels.xml` or custom properties files.
 
 ## Guardrails
-- **Structure**: Always maintain standard OFBiz directory structure (e.g., `src`, `webapp`, `entitydef`, `servicedef`, `data`).
+- **Registry**: Every XML resource (entity, service, data) MUST be registered in `ofbiz-component.xml`.
+- **Loading**: Use `<depends-on>` for internal component dependencies. Avoid `<load-component>` for plugin-layer dependencies.
 - **URIs**: Prefer `component://[componentName]/path/to/file` for all resource locations to ensure portability.
-- **Portability**: Avoid absolute file system paths.
-- **Mount Points**: Ensure `mount-point` in `<webapp>` does not collide with other components.
+- **Mount Points**: Ensure a unique `mount-point` for `<webapp>` entries.
 
 ## Examples
 **Example: Complete ofbiz-component.xml snippet**

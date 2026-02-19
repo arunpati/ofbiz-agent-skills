@@ -10,6 +10,7 @@ Define and implement business logic as reusable, transactional OFBiz services.
 ## Triggers
 **ALWAYS** read this skill when:
 - Defining or modifying `servicedef/services.xml`.
+- Registering services in `ofbiz-component.xml`.
 - Implementing service logic in Java, Groovy, or MiniLang.
 - Troubleshooting service execution/validation.
 
@@ -27,7 +28,11 @@ Define and implement business logic as reusable, transactional OFBiz services.
     - **In/Out Parameters**: Use `<attribute name="..." mode="IN|OUT|INOUT" type="..." optional="true|false"/>`.
     - **Auth**: Set `auth="true"` for protected services.
     - **Transactions**: Default is `use-transaction="true"`. Use `require-new-transaction="true"` for independent operations.
-3. **Execution Logic**:
+3. **Register**: Ensure the `services.xml` is registered in `ofbiz-component.xml`:
+   ```xml
+   <service-resource type="model" loader="main" location="servicedef/services.xml"/>
+   ```
+4. **Execution Logic**:
     - **Request Processing**: Access parameters via `context` (Map).
     - **Results**: Return results via `ServiceUtil.returnSuccess()` or `returnError()`.
 4. **Service Overrides**:
@@ -36,6 +41,8 @@ Define and implement business logic as reusable, transactional OFBiz services.
 ## Guardrails
 - **Naming**: Use `verbNoun` (e.g., `updateExample`).
 - **Persistence**: Do not handle database transactions manually in code; let the service engine manage them.
+- **Security**: ALWAYS implement permission checks. Use `<permission-service>` in `services.xml` or `security.hasEntityPermission()` in implementation.
+- **Contract**: Services MUST return success/error maps via `ServiceUtil` (Java) or DSL shorthands (Groovy).
 - **Null Safety**: Always check for mandatory attributes in implemention if not strictly enforced by XML.
 - **Error Messages**: Use properties from `uiLabelMap` for user-facing error messages.
 
