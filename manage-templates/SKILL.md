@@ -30,47 +30,64 @@ Define and maintain complex OFBiz Freemarker (FTL) templates, ensuring correct u
 3. **Control Flow**:
     - **Lists**: Use `<#list listVar as item> ... <#else> ... </#list>` for iterations.
     - **Conditionals**: Use `<#if condition> ... <#elseif ...> ... <#else> ... </#if>`.
-4. **Context Access**:
+4. **Context & Data Access**:
     - Access `parameters.xyz` for request parameters.
     - Access `requestAttributes.xyz` or `sessionAttributes.xyz` for backend data.
+    - **In-template Data Fetching**: Use `delegator` or `dispatcher` directly for lightweight lookups (e.g., `${delegator.findOne("Product", {"productId": pid}, true).productName!}`).
     - Use `Static["class.path"].method()` for Java utility calls (use sparingly).
-5. **Encoding & Security**:
+5. **HTML5 Semantic Structure**:
+    - **Mandatory**: Use semantic tags (`<header>`, `<main>`, `<section>`, `<article>`, `<footer>`) instead of generic `<div>` wrappers.
+    - **Accessibility**: Use `aria-*` attributes and proper label associations.
+6. **Encoding & Security**:
     - Use `?html` or `?js_string` when outputting variables to prevent XSS.
 
 ## Guardrails
-- **Logic Placement**: Keep complex business logic in Groovy/Java; FTL should primarly focus on presentation logic.
-- **Paths**: Reference templates using `component://` in screen XML, but keep FTL internal paths relative to the component's `template` root where possible.
+- **Logic Placement**: Keep complex business logic in Groovy/Java; FTL should primarly focus on presentation logic and secondary data lookups.
+- **Paths**: Reference templates using `component://` in screen XML.
 - **Macros**: Define reusable UI blocks as `<#macro name param> ... </#macro>` to avoid duplication.
 
 ## Examples
-**Example: Advanced Product Listing Snippet**
+**Example: Premium Semantic Dashboard Widget**
 ```ftl
-<#-- Initialize data -->
+<#-- Initialize data and perform lightweight lookup if needed -->
 <#assign productList = productList! />
 
-<div class="product-grid">
-  <#if productList?has_content>
-    <ul>
-      <#list productList as product>
-        <#assign price = productPriceMap[product.productId]! />
-        <li>
-          <h3>${product.productName!product.productId}</h3>
-          <p>
-            ${uiLabelMap.ProductPrice}: 
-            <#if price?has_content>
-              <@ofbizCurrency amount=price.price isoCode=price.currencyUsed />
-            <#else>
-              ${uiLabelMap.ProductNoPriceAvailable}
+<section class="card" aria-labelledby="widget-title">
+  <header>
+    <h2 id="widget-title">${uiLabelMap.ProductFeaturedProducts}</h2>
+  </header>
+  
+  <article class="content">
+    <#if productList?has_content>
+      <ul class="product-list" role="list">
+        <#list productList as product>
+          <#-- Data fetching lookup for category name -->
+          <#assign category = delegator.findOne("ProductCategory", {"productCategoryId": product.primaryProductCategoryId!}, true)! />
+          <#assign price = productPriceMap[product.productId]! />
+          
+          <li class="product-item">
+            <h3>${product.productName!product.productId}</h3>
+            <#if category?has_content>
+              <p class="category-tag"><small>${category.categoryName!category.description!}</small></p>
             </#if>
-          </p>
-          <a href="<@ofbizUrl>product?product_id=${product.productId}</@ofbizUrl>" class="button">
-            ${uiLabelMap.CommonViewDetails}
-          </a>
-        </li>
-      </#list>
-    </ul>
-  <#else>
-    <p>${uiLabelMap.ProductNoProductsFound}</p>
-  </#if>
-</div>
+            <div class="price-container">
+              <#if price?has_content>
+                <@ofbizCurrency amount=price.price isoCode=price.currencyUsed />
+              <#else>
+                <span class="no-price">${uiLabelMap.ProductNoPriceAvailable}</span>
+              </#if>
+            </div>
+            <footer>
+              <a href="<@ofbizUrl>product?product_id=${product.productId}</@ofbizUrl>" class="btn btn-primary">
+                ${uiLabelMap.CommonViewDetails}
+              </a>
+            </footer>
+          </li>
+        </#list>
+      </ul>
+    <#else>
+      <p class="empty-state">${uiLabelMap.ProductNoProductsFound}</p>
+    </#if>
+  </article>
+</section>
 ```
