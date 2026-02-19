@@ -10,6 +10,7 @@ Define and maintain request mappings and view definitions within the OFBiz `cont
 ## Triggers
 **ALWAYS** read this skill when:
 - Modifying `WEB-INF/controller.xml`.
+- Registering a web application in `ofbiz-component.xml`.
 - Adding new UI pages (views) or form submission targets (requests).
 
 ## Use when
@@ -22,14 +23,18 @@ Define and maintain request mappings and view definitions within the OFBiz `cont
     - Set `uri` to a unique identifier.
     - Set `https="true"` for sensitive data.
     - Set `auth="true"` to require user login.
-2. **Request Mapping**:
+2. **Register**: Ensure the webapp is registered in `ofbiz-component.xml`:
+   ```xml
+   <webapp name="myApp" title="My App" server="default-server" location="webapp/myApp" mount-point="/myapp"/>
+   ```
+3. **Request Mapping**:
     - Define `<event type="..." path="..." invoke="..."/>` for processing logic.
-    - Common event types: `java`, `service`, `groovy`, `xml-service`.
-3. **Response Handling**:
+    - Common event types: `java`, `service`, `groovy`.
+4. **Response Handling**:
     - Use `<response name="success" type="view" value="..."/>` for standard page rendering.
     - Use `<response name="success" type="request" value="..."/>` for request chaining (redirects).
     - Use `<response name="error" type="view" value="..."/>` for returning to the input page on failure.
-4. **View Definitions**:
+5. **View Definitions**:
     - Map the `value` in the response to a `<view-map>`.
     - Specify `type="screen"` for Screen Widget views.
     - Set `page="..."` to the component location of the screen (e.g., `component://example/widget/example/ExampleScreens.xml#EditExample`).

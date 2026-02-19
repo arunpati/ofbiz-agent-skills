@@ -10,6 +10,7 @@ Define and maintain data input forms and data display grids using the OFBiz Form
 ## Triggers
 **ALWAYS** read this skill when:
 - Creating or modifying XML files in `widget/` directory (e.g., `*Forms.xml`).
+- Registering form resources in `ofbiz-component.xml`.
 - Defining new forms/grids or extending existing ones.
 
 ## Use when
@@ -23,7 +24,11 @@ Define and maintain data input forms and data display grids using the OFBiz Form
     - Use `extends-resource="..."` to specify the location of the parent form.
 2. **Form Types**:
     - `single`: For single record input/edit.
-    - `list` or `grid`: For multiple records. Use `grid` (newer) over `form type="list"`.
+    - `list` or `grid`: For multiple records. Use `grid` (modern) over `form type="list"`.
+3. **Register**: Ensure the widget XML is registered in `ofbiz-component.xml`:
+   ```xml
+   <form-resource type="model" loader="main" location="component://[comp]/widget/[File]Forms.xml"/>
+   ```
 3. **Data Binding**:
     - Use `auto-fields-service` or `auto-fields-entity` to generate fields automatically.
     - Use `<actions>` within the grid to perform complex finds (e.g., calling `performFind` service).
