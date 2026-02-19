@@ -27,6 +27,8 @@ Define and implement business logic as reusable, transactional OFBiz services.
 2. **Service Definition**:
     - **In/Out Parameters**: Use `<attribute name="..." mode="IN|OUT|INOUT" type="..." optional="true|false"/>`.
     - **Auth**: Set `auth="true"` for protected services.
+    - **Export**: Set `export="true"` to expose the service to external callers.
+    - **Action**: Set `action="GET|POST|PUT|DELETE"` to automatically export the service as a REST API endpoint.
     - **Transactions**: Default is `use-transaction="true"`. Use `require-new-transaction="true"` for independent operations.
 3. **Register**: Ensure the `services.xml` is registered in `ofbiz-component.xml`:
    ```xml
@@ -47,6 +49,15 @@ Define and implement business logic as reusable, transactional OFBiz services.
 - **Error Messages**: Use properties from `uiLabelMap` for user-facing error messages.
 
 ## Examples
+**Example: REST Export in Service Definition**
+```xml
+<service name="findProductById" engine="java" auth="true" export="true" action="GET"
+         location="org.apache.ofbiz.product.product.ProductServices" invoke="findProductById">
+    <description>Automatically exported as a REST API</description>
+    <attribute name="productId" mode="IN" type="String" optional="false"/>
+</service>
+```
+
 **Example: CRUD with entity-auto**
 ```xml
 <service name="createExample" engine="entity-auto" invoke="create" default-entity-name="Example" auth="true">

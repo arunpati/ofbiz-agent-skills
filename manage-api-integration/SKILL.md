@@ -47,6 +47,25 @@ All extracted parameters are aggregated into a single context. The `ServiceReque
 - `OFBizApiConfig.java`: Scans and registers REST definitions.
 - `ServiceRequestHandler.java`: Dispatches REST requests to the OFBiz Service Dispatcher.
 
+## Direct Service REST Export
+
+OFBiz allows services to be exposed as REST APIs directly via attributes in the service definition.
+
+### Pattern:
+- **Attributes**: Set `export="true"` and `action="VERB"` (e.g., `action="GET"`).
+- **Result**: The service becomes reachable as a REST endpoint (e.g., `/rest/public/findProductById` or similar depending on the rest-api plugin configuration).
+
+```xml
+<service name="findProductById" engine="java" auth="true" export="true" action="GET" ...>
+    <attribute name="productId" mode="IN" type="String" optional="false"/>
+</service>
+```
+
+### Key Considerations:
+- **Simplicity**: No need for separate `rest.xml` or controller mappings.
+- **Contract-first**: The service signature defines the API request/response.
+- **Auth**: Inherits service engine authentication rules.
+
 ## JSON Responses
 
 For standard controller-based AJAX/API calls, use the `json` response type.
