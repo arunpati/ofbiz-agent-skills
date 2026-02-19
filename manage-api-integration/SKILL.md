@@ -11,26 +11,37 @@ Integration patterns for exposing OFBiz services via REST and SOAP, and handling
 
 OFBiz uses the `rest-api` plugin (based on Jersey) to declaratively expose services.
 
-### Defining REST Endpoints
-REST endpoints are defined in `*.rest.xml` files within the `ofbiz-component.xml` of a plugin.
+### REST API Definitions
 
+REST endpoints are defined in `*.rest.xml` files located in the `api/` directory of an OFBiz component. These files are automatically discovered and registered by the `rest-api` plugin; no explicit registration in `ofbiz-component.xml` is required.
+
+**Pattern for `*.rest.xml`:**
 ```xml
-<rest-api name="ExampleResource" title="Example API" description="API for Example entities">
-    <resource path="/examples">
-        <operation method="GET" service="getExample" name="getExample">
-            <description>Get an example by ID</description>
-            <parameter name="exampleId" type="path" required="true"/>
+<api name="Example API" path="example" ...>
+    <resource name="Example" path="examples" ...>
+        <operation verb="GET" path="/{exampleId}" service="findExampleById" description="Get Example">
+            <service name="findExampleById" />
         </operation>
-        <operation method="POST" service="createExample" name="createExample">
-            <description>Create a new example</description>
+        <operation verb="POST" path="/create" service="createExample" description="Create Example">
+            <service name="createExample" />
         </operation>
     </resource>
-</rest-api>
+</api>
 ```
 
-- **Path Parameters**: Use `type="path"` in `<parameter>`.
-- **Query Parameters**: Use `type="query"` in `<parameter>`.
-- **Body**: The request body is automatically mapped to service IN parameters if they match the JSON keys.
+### Parameter Handling
+
+Parameter mapping from REST requests to OFBiz services is **implicit**. The `rest-api` plugin automatically extracts parameters from the request and maps them to service IN parameters whose names match.
+
+*   **Path Parameters:** Extracted from the URI based on placeholders in the `path` attributes (e.g., `{exampleId}`).
+*   **Query Parameters:** Extracted from the request URL.
+*   **Request Body:** For `POST`, `PUT`, and `PATCH` requests with `Content-Type: application/json`, the JSON payload is automatically parsed into a map.
+
+All extracted parameters are aggregated into a single context. The `ServiceRequestHandler` then uses `dispatcher.getDispatchContext().makeValidContext()` to select only those parameters that are defined as IN parameters for the target service.
+
+### Security and Response Handling
+*   **Authentication:** Controlled by the `auth="true|false"` attribute on the `<operation>` element.
+*   **Responses:** Services return their OUT parameters (excluding internal ones) as a JSON object. The response is automatically prefixed with `&&&START&&&` for XSSI protection.
 
 ### Core Components
 - `OFBizApiConfig.java`: Scans and registers REST definitions.
