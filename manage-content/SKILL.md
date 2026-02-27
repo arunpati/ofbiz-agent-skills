@@ -53,6 +53,8 @@ To correctly manage the OFBiz Content Management System (CMS) data, including da
 - **HTTP vs HTTPS and Relative URLs**:
   - For internal images or documents (`LOCAL_FILE`), **ALWAYS** use OFBiz-relative paths (e.g., `/images/products/myproduct.jpg`). Never hardcode `http://localhost:8080/` or absolute server paths.
   - For external URLs (`URL_RESOURCE`), **ALWAYS** use `https://` to prevent "Mixed Content" security warnings on secure checkout or account pages. Never use HTTP unless explicitly told the target server does not support SSL.
+- **Naming**: Use clear, descriptive names for `contentId`.
+- **Status**: Always set `statusId` (e.g., `CTNT_PUBLISHED`) to ensure visibility if logic filters by status.
 - **The `ElectronicText` Rule**: If `dataResourceTypeId="ELECTRONIC_TEXT"`, you **must** also create an `<ElectronicText>` associated record or you will get silent blank values.
 - **The `fromDate` Requirement**: Every associative entity (`ProductContent`, `ContentAssoc`, `CategoryContent`, etc.) requires a `fromDate` for its Primary Key. 
 - **Caching Required**: Content fetching requires multiple database hops. ALWAYS invoke caching signatures (`useCache=true` in `ContentWorker` or rely on Wrappers which cache by default) unless explicitly rendering highly dynamic templates, to prevent severe performance degradation.
