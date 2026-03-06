@@ -57,11 +57,11 @@ In `entitymodel.xml`:
 ### Programmatic Caching (Delegator)
 Even if `use-cache="false"` at the entity level, you can force it in code:
 ```java
-// findOne with cache=true
-GenericValue val = delegator.findOne("Product", UtilMisc.toMap("productId", "10000"), true);
+// queryOne with cache
+GenericValue val = EntityQuery.use(delegator).from("Product").where("productId", "10000").cache(true).queryOne();
 
-// findList with cache=true
-List<GenericValue> list = delegator.findList("ProductCategory", null, null, null, null, true);
+// queryList with cache
+List<GenericValue> list = EntityQuery.use(delegator).from("ProductCategory").cache(true).queryList();
 ```
 
 ## Service Results Caching

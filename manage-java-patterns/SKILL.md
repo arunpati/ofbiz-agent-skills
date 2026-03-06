@@ -30,8 +30,7 @@ Implement business logic and data retrieval using consistent OFBiz Java patterns
     - **Usage**: Common calculations, formatting, or checks (e.g., `ProductWorker.isPhysical()`).
     - **Example**: `ProductWorker`, `ContactMechWorker`, `EntityUtil`.
 3. **Data Retrieval Strategy**:
-    - Use `delegator.findOne()` or `delegator.from()...queryOne()` for primary keys.
-    - Use `EntityQuery` for fluent API queries.
+    - Use `EntityQuery` for fluent API queries (including primary key lookups).
     - Handle `GenericEntityException` with `Debug.logError`.
 
 ## Guardrails
